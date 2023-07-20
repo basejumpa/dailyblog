@@ -1,5 +1,5 @@
 baseURL: https://basejumpa.github.io/dailyblog
-title: My New Hugo Site
+title: Aktuelle Themen des Tages
 module:
   imports:
   - path: github.com/theNewDynamic/gohugo-theme-ananke
