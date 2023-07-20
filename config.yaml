@@ -1,4 +1,4 @@
-baseURL: https://basejumpa.github.io
+baseURL: https://basejumpa.github.io/dailyblog
 title: My New Hugo Site
 module:
   imports:
