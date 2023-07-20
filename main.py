@@ -33,7 +33,7 @@ def get_trends(count):
     return trends
 
 
-for trend in get_trends(5):
+for trend in get_trends(6):
     print(f"Trend  \"{trend}\": ", end='')
 
     directory = "content/posts"
