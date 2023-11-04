@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
         file = directory + "/" + trend_wo_whitespaces + ".md"
 
-        image_filename = "static/images/" + trend_wo_whitespaces + ".jpg"
+        image_filename = trend_wo_whitespaces + ".jpg"
 
         user_prompt = "Schreibe einen 4 Absätze langen Blogeintrag über folgendes Thema: " + trend
         response = chat_with_gpt3(user_prompt)
@@ -83,8 +83,8 @@ if __name__ == "__main__":
             f.write(f"draft: false\n")
             f.write(f"---\n\n")
 
-            if create_image_from(response[:999], image_filename):
-                f.write(f"\n![alt](..images/{image_filename})\n\n")
+            if create_image_from(response[:999], "static/images/" + image_filename):
+                f.write(f"\n![alt](../images/{image_filename})\n\n")
 
             f.write(response)
             f.close()
