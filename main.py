@@ -75,7 +75,7 @@ if __name__ == "__main__":
             f = open(file, "w")
 
             f.write(f"---\n")
-            f.write(f"title: {trend}\n")
+            f.write(f"title: \"{trend}\"\n")
             f.write(f"date:  {now}\n")
             f.write(f"draft: false\n")
             f.write(f"---\n\n")
