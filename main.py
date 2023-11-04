@@ -27,14 +27,17 @@ def create_image_from(description, file_name):
         size="1024x1024"
     )
     image_url = response['data'][0]['url']
-    res = requests.get(image_url, stream = True)
-    if res.status_code == 200:
-        with open(file_name,'wb') as f:
-            shutil.copyfileobj(res.raw, f)
-        print('Image sucessfully created: ', file_name)
-        return True
-    else:
-        print('Error Image couldn\'t be retrieved!')
+    try:
+        res = requests.get(image_url, stream = True)
+        if res.status_code == 200:
+            with open(file_name,'wb') as f:
+                shutil.copyfileobj(res.raw, f)
+            print('Image sucessfully created: ', file_name)
+            return True
+        else:
+            print('Error Image couldn\'t be retrieved!')
+            return False
+    except:
         return False
 
 def get_trends(count):
@@ -80,7 +83,8 @@ if __name__ == "__main__":
             f.write(f"draft: false\n")
             f.write(f"---\n\n")
 
-            f.write(f"\n![alt](..images/{image_filename})\n\n")
+            if create_image_from(response[:999], image_filename):
+                f.write(f"\n![alt](..images/{image_filename})\n\n")
 
             f.write(response)
             f.close()
@@ -88,4 +92,3 @@ if __name__ == "__main__":
         else:
             print("Blog entry already exists.")
 
-        create_image_from(response[:999], image_filename)
