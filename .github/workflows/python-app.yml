@@ -46,7 +46,7 @@ jobs:
         python main.py
 
     - name: "Commit new content"
-    - uses: EndBug/add-and-commit@v9
+      uses: EndBug/add-and-commit@v9
       with:
         add: '["content/posts/*.md", "static/images/*.jpg"]'
 
