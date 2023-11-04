@@ -84,7 +84,7 @@ if __name__ == "__main__":
             f.write(f"---\n\n")
 
             if create_image_from(response[:999], "static/images/" + image_filename):
-                f.write(f"\n![alt](../images/{image_filename})\n\n")
+                f.write(f"\n![alt](../../images/{image_filename})\n\n")
 
             f.write(response)
             f.close()
