@@ -3,12 +3,11 @@ import sys
 import openai
 from pytrends.request import TrendReq
 from datetime import datetime
-
-
-
-
+import requests
+import shutil
 
 openai.api_key = os.environ.get('API_KEY')
+
 
 def chat_with_gpt3(prompt):
     response = openai.ChatCompletion.create(
@@ -18,9 +17,25 @@ def chat_with_gpt3(prompt):
             {"role": "user", "content": prompt}
         ]
     )
-
     assistant_reply = response['choices'][0]['message']['content']
     return assistant_reply
+
+def create_image_from(description, file_name):
+    response = openai.Image.create(
+        prompt=description,
+        n=1,
+        size="1024x1024"
+    )
+    image_url = response['data'][0]['url']
+    res = requests.get(image_url, stream = True)
+    if res.status_code == 200:
+        with open(file_name,'wb') as f:
+            shutil.copyfileobj(res.raw, f)
+        print('Image sucessfully created: ', file_name)
+        return True
+    else:
+        print('Error Image couldn\'t be retrieved!')
+        return False
 
 def get_trends(count):
     trends = []
@@ -33,38 +48,44 @@ def get_trends(count):
     return trends
 
 
-for trend in get_trends(6):
-    print(f"Trend  \"{trend}\": ", end='')
+if __name__ == "__main__":
 
-    directory = "content/posts"
+    for trend in get_trends(6):
+        print(f"Trend  \"{trend}\": ", end='')
 
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+        directory = "content/posts"
 
-    trend_wo_whitespaces = trend.replace(' ', '-')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
-    file = directory + "/" + trend_wo_whitespaces + ".md"
+        trend_wo_whitespaces = trend.replace(' ', '-')
 
-    if not os.path.exists(file):
+        file = directory + "/" + trend_wo_whitespaces + ".md"
 
-        print("Writing new blog entry.")
+        image_filename = "static/images/" + trend_wo_whitespaces + ".jpg"
 
-        user_prompt = "Schreibe einen Blog, 4 Absätze lang, über das Thema " + trend
+        user_prompt = "Schreibe einen 4 Absätze langen Blogeintrag über folgendes Thema: " + trend
         response = chat_with_gpt3(user_prompt)
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")
+        if not os.path.exists(file):
+            print("Writing new blog entry.")
 
-        f = open(file, "w")
+            now = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")
 
-        f.write(f"---\n")
-        f.write(f"title: {trend}\n")
-        f.write(f"date:  {now}\n")
-        f.write(f"draft: false\n")
-        f.write(f"---\n\n")
+            f = open(file, "w")
 
-        f.write(response)
-        f.close()
-    
-    else:
+            f.write(f"---\n")
+            f.write(f"title: {trend}\n")
+            f.write(f"date:  {now}\n")
+            f.write(f"draft: false\n")
+            f.write(f"---\n\n")
 
-        print("Blog entry already exists.")
+            f.write(f"\n![alt](..images/{image_filename})\n\n")
+
+            f.write(response)
+            f.close()
+        
+        else:
+            print("Blog entry already exists.")
+
+        create_image_from(response[:999], image_filename)
