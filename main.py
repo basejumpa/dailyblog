@@ -21,13 +21,14 @@ def chat_with_gpt3(prompt):
     return assistant_reply
 
 def create_image_from(description, file_name):
-    response = openai.Image.create(
-        prompt=description,
-        n=1,
-        size="1024x1024"
-    )
-    image_url = response['data'][0]['url']
     try:
+        response = openai.Image.create(
+            prompt=description,
+            n=1,
+            size="1024x1024"
+        )
+        image_url = response['data'][0]['url']
+        
         res = requests.get(image_url, stream = True)
         if res.status_code == 200:
             with open(file_name,'wb') as f:
