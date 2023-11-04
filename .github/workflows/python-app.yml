@@ -44,7 +44,7 @@ jobs:
 
     - uses: EndBug/add-and-commit@v9
       with:
-        add: 'content/posts/*.md'
+        add: '["content/posts/*.md", "static/images/*.jpg"]'
 
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
