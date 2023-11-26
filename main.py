@@ -1,32 +1,30 @@
 import os
 import sys
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get('API_KEY'))
 from pytrends.request import TrendReq
 from datetime import datetime
 import requests
 import shutil
 
-openai.api_key = os.environ.get('API_KEY')
+
 
 
 def chat_with_gpt3(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Du bist ein deutscher Blogger."},
-            {"role": "user", "content": prompt}
-        ]
-    )
+    response = client.chat.completions.create(model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "Du bist ein deutscher Blogger."},
+        {"role": "user", "content": prompt}
+    ])
     assistant_reply = response['choices'][0]['message']['content']
     return assistant_reply
 
 def create_image_from(description, file_name):
     try:
-        response = openai.Image.create(
-            prompt=description,
-            n=1,
-            size="1024x1024"
-        )
+        response = client.images.generate(prompt=description,
+        n=1,
+        size="1024x1024")
         image_url = response['data'][0]['url']
         
         res = requests.get(image_url, stream = True)
